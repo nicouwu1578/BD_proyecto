@@ -13,7 +13,6 @@ const COLUMNAS = `
   tercero ( nombre_tercero, relacion ),
   usuario ( usuario ),
   origen:bodega!fk_movimiento_bodega ( bodega ),
-  destino:bodega!fk_movimiento_bodega_destino ( bodega ),
   detalle_movimiento ( codigo_producto, cantidad, precio_unitario, producto ( producto ) )
 `
 
@@ -147,7 +146,7 @@ export default function Transacciones() {
                     <td>{m.tercero?.nombre_tercero ?? '—'}</td>
                     <td>{m.usuario?.usuario ?? '—'}</td>
                     <td className="derecha">{m.detalle_movimiento?.length ?? 0}</td>
-                    <td className="derecha">{formatoPesos(totalDe(m))}</td>
+                    <td className="derecha">{m.tipo_movimiento === 'Ajuste' ? '—' : formatoPesos(totalDe(m))}</td>
                     <td>
                       <span className={`chip-estado estado-${m.estado.toLowerCase()}`}>{m.estado}</span>
                     </td>
@@ -185,6 +184,7 @@ export default function Transacciones() {
 }
 
 function DetalleRemision({ remision: m, rol, idUsuario, onCerrar, onCambio }) {
+  const esAjuste = m.tipo_movimiento === 'Ajuste'
   const [confirmarAnular, setConfirmarAnular] = useState(false)
   const [trabajando, setTrabajando] = useState(false)
   const [error, setError] = useState('')
@@ -227,7 +227,6 @@ function DetalleRemision({ remision: m, rol, idUsuario, onCerrar, onCambio }) {
         <div><dt>Tercero</dt><dd>{m.tercero?.nombre_tercero ?? '—'} {m.id_tercero ? `(${m.id_tercero})` : ''}</dd></div>
         <div><dt>Responsable</dt><dd>{m.usuario?.usuario ?? '—'}</dd></div>
         <div><dt>Bodega origen</dt><dd>{m.origen?.bodega ?? '—'}</dd></div>
-        {m.destino && <div><dt>Bodega destino</dt><dd>{m.destino.bodega}</dd></div>}
       </dl>
 
       <div className="tabla-scroll">
@@ -235,9 +234,9 @@ function DetalleRemision({ remision: m, rol, idUsuario, onCerrar, onCambio }) {
           <thead>
             <tr>
               <th>Producto</th>
-              <th className="derecha">Cantidad</th>
-              <th className="derecha">Precio</th>
-              <th className="derecha">Subtotal</th>
+              <th className="derecha">{esAjuste ? 'Ajuste' : 'Cantidad'}</th>
+              {!esAjuste && <th className="derecha">Precio</th>}
+              {!esAjuste && <th className="derecha">Subtotal</th>}
             </tr>
           </thead>
           <tbody>
@@ -249,18 +248,23 @@ function DetalleRemision({ remision: m, rol, idUsuario, onCerrar, onCambio }) {
                     <small>{d.codigo_producto}</small>
                   </div>
                 </td>
-                <td className="derecha">{formatoNumero(d.cantidad)}</td>
-                <td className="derecha">{formatoPesos(d.precio_unitario)}</td>
-                <td className="derecha">{formatoPesos(d.cantidad * Number(d.precio_unitario))}</td>
+                <td className="derecha">
+                  {esAjuste && d.cantidad > 0 ? '+' : ''}
+                  {formatoNumero(d.cantidad)}
+                </td>
+                {!esAjuste && <td className="derecha">{formatoPesos(d.precio_unitario)}</td>}
+                {!esAjuste && <td className="derecha">{formatoPesos(d.cantidad * Number(d.precio_unitario))}</td>}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="total-remision">
-        <span>Total</span>
-        <strong>{formatoPesos(totalDe(m))}</strong>
-      </div>
+      {!esAjuste && (
+        <div className="total-remision">
+          <span>Total</span>
+          <strong>{formatoPesos(totalDe(m))}</strong>
+        </div>
+      )}
 
       {error && <div className="alerta alerta-error">{error}</div>}
 

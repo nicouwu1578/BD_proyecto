@@ -33,7 +33,6 @@ export default function NuevaTransaccion() {
   const [tipo, setTipo] = useState('')
   const [fecha, setFecha] = useState(hoy)
   const [tercero, setTercero] = useState(null)
-  const [destino, setDestino] = useState('')
   const [lineas, setLineas] = useState([])
   const [mostrarNuevoTercero, setMostrarNuevoTercero] = useState(false)
 
@@ -77,18 +76,20 @@ export default function NuevaTransaccion() {
 
   const clienteMostrador = terceros.find((t) => Number(t.cedula_tercero) === CLIENTE_MOSTRADOR)
 
-  const total = lineas.reduce((s, l) => s + (Number(l.cantidad) || 0) * (Number(l.precio) || 0), 0)
+  const esAjuste = tipo === 'Ajuste'
+  const signo = (l) => (esAjuste && l.sentido === 'Restar' ? -1 : 1)
+  const resta = (l) => (config?.restaStock || (esAjuste && l.sentido === 'Restar'))
+  const total = lineas.reduce((s, l) => s + signo(l) * (Number(l.cantidad) || 0) * (Number(l.precio) || 0), 0)
   const bodegaPrincipal = bodegas.find((b) => b.id_bodega === BODEGA_PRINCIPAL)
 
   function elegirTipo(t) {
     setTipo(t)
     setError('')
     if (tercero && !TIPOS[t].relaciones.includes(tercero.relacion)) setTercero(null)
-    if (t !== 'Traslado') setDestino('')
   }
 
   function agregarProducto(p) {
-    setLineas([...lineas, { producto: p, cantidad: 1, precio: Number(p.precio_venta) }])
+    setLineas([...lineas, { producto: p, cantidad: 1, precio: Number(p.precio_venta), sentido: 'Sumar' }])
   }
 
   function cambiarLinea(i, campo, valor) {
@@ -101,14 +102,13 @@ export default function NuevaTransaccion() {
 
   function validar() {
     if (!tipo) return 'Elige el tipo de movimiento.'
-    if (!tercero) return `Elige el ${config.nombreTercero.toLowerCase()}.`
-    if (tipo === 'Traslado' && !destino) return 'Elige la bodega destino del traslado.'
+    if (config.nombreTercero && !tercero) return `Elige el ${config.nombreTercero.toLowerCase()}.`
     if (lineas.length === 0) return 'Agrega al menos un producto.'
     for (const l of lineas) {
       if (!(Number.isInteger(Number(l.cantidad)) && Number(l.cantidad) > 0))
         return `La cantidad de ${l.producto.codigo} debe ser un número entero mayor que 0.`
-      if (!(Number(l.precio) > 0)) return `El precio de ${l.producto.codigo} debe ser mayor que 0.`
-      if (config.restaStock && Number(l.cantidad) > (l.producto.cantidad ?? 0))
+      if (!esAjuste && !(Number(l.precio) > 0)) return `El precio de ${l.producto.codigo} debe ser mayor que 0.`
+      if (resta(l) && Number(l.cantidad) > (l.producto.cantidad ?? 0))
         return `No hay stock suficiente de ${l.producto.codigo}: hay ${formatoNumero(l.producto.cantidad)}.`
     }
     return ''
@@ -122,8 +122,8 @@ export default function NuevaTransaccion() {
 
     const detalles = lineas.map((l) => ({
       codigo_producto: l.producto.codigo,
-      cantidad: Number(l.cantidad),
-      precio_unitario: Number(l.precio),
+      cantidad: signo(l) * Number(l.cantidad),
+      precio_unitario: esAjuste ? Number(l.producto.precio_venta) : Number(l.precio),
     }))
 
     try {
@@ -132,11 +132,10 @@ export default function NuevaTransaccion() {
         const { data, error: err } = await supabase.rpc('registrar_movimiento', {
           p_nro_remision: nro,
           p_tipo_movimiento: tipo,
-          p_id_tercero: tercero.cedula_tercero,
+          p_id_tercero: esAjuste ? null : tercero.cedula_tercero,
           p_detalles: detalles,
           p_fecha: fecha,
           p_id_bodega: BODEGA_PRINCIPAL,
-          p_id_bodega_destino: tipo === 'Traslado' ? Number(destino) : null,
         })
         if (err) throw err
         if (data?.ok) {
@@ -159,7 +158,6 @@ export default function NuevaTransaccion() {
     setResultado(null)
     setTipo('')
     setTercero(null)
-    setDestino('')
     setLineas([])
     setFecha(hoy())
   }
@@ -173,7 +171,8 @@ export default function NuevaTransaccion() {
           <FiCheckCircle />
           <h1>Remisión {resultado.nro_remision} registrada</h1>
           <p>
-            {TIPOS[tipo].titulo} · {resultado.productos} producto(s) · {formatoPesos(total)}
+            {TIPOS[tipo].titulo} · {resultado.productos} producto(s)
+            {tipo !== 'Ajuste' && ` · ${formatoPesos(total)}`}
           </p>
           <div className="acciones-form">
             <button className="btn btn-secundario" onClick={() => navigate('/transacciones')}>
@@ -226,6 +225,7 @@ export default function NuevaTransaccion() {
             <>
               <h2 className="paso">2. Datos de la remisión</h2>
               <div className="tarjeta form-grid">
+                {config.nombreTercero && (
                 <div className="campo campo-ancho">
                   <span>{config.nombreTercero}</span>
                   {tercero ? (
@@ -281,6 +281,7 @@ export default function NuevaTransaccion() {
                     </div>
                   )}
                 </div>
+                )}
 
                 <label className="campo">
                   <span>Fecha</span>
@@ -295,21 +296,6 @@ export default function NuevaTransaccion() {
                   </div>
                 </div>
 
-                {tipo === 'Traslado' && (
-                  <label className="campo campo-ancho">
-                    <span>Bodega destino</span>
-                    <select className="input" value={destino} onChange={(e) => setDestino(e.target.value)}>
-                      <option value="">Elige la bodega destino...</option>
-                      {bodegas
-                        .filter((b) => b.id_bodega !== BODEGA_PRINCIPAL)
-                        .map((b) => (
-                          <option key={b.id_bodega} value={b.id_bodega}>
-                            {b.bodega}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
-                )}
               </div>
 
               <h2 className="paso">3. Productos</h2>
@@ -337,15 +323,16 @@ export default function NuevaTransaccion() {
                         <tr>
                           <th>Producto</th>
                           <th className="derecha">Stock</th>
+                          {esAjuste && <th>Ajuste</th>}
                           <th className="derecha">Cantidad</th>
-                          <th className="derecha">Precio unitario</th>
-                          <th className="derecha">Subtotal</th>
+                          {!esAjuste && <th className="derecha">Precio unitario</th>}
+                          {!esAjuste && <th className="derecha">Subtotal</th>}
                           <th></th>
                         </tr>
                       </thead>
                       <tbody>
                         {lineas.map((l, i) => {
-                          const falta = config.restaStock && Number(l.cantidad) > (l.producto.cantidad ?? 0)
+                          const falta = resta(l) && Number(l.cantidad) > (l.producto.cantidad ?? 0)
                           return (
                             <tr key={l.producto.codigo}>
                               <td>
@@ -355,18 +342,31 @@ export default function NuevaTransaccion() {
                                 </div>
                               </td>
                               <td className="derecha">{formatoNumero(l.producto.cantidad)}</td>
+                              {esAjuste && (
+                                <td>
+                                  <select className="input" value={l.sentido}
+                                    onChange={(e) => cambiarLinea(i, 'sentido', e.target.value)}>
+                                    <option value="Sumar">Sumar</option>
+                                    <option value="Restar">Restar</option>
+                                  </select>
+                                </td>
+                              )}
                               <td className="derecha">
                                 <input type="number" min="1" step="1"
                                   className={`input input-numero ${falta ? 'input-error' : ''}`}
                                   value={l.cantidad} onChange={(e) => cambiarLinea(i, 'cantidad', e.target.value)} />
                               </td>
+                              {!esAjuste && (
+                                <>
                               <td className="derecha">
                                 <input type="number" min="1" step="any" className="input input-numero"
                                   value={l.precio} onChange={(e) => cambiarLinea(i, 'precio', e.target.value)} />
                               </td>
                               <td className="derecha">
-                                <strong>{formatoPesos((Number(l.cantidad) || 0) * (Number(l.precio) || 0))}</strong>
+                                <strong>{formatoPesos(signo(l) * (Number(l.cantidad) || 0) * (Number(l.precio) || 0))}</strong>
                               </td>
+                                </>
+                              )}
                               <td>
                                 <button type="button" className="btn-icono peligro" onClick={() => quitarLinea(i)}
                                   title="Quitar">
@@ -381,10 +381,12 @@ export default function NuevaTransaccion() {
                   </div>
                 )}
 
-                <div className="total-remision">
-                  <span>Total</span>
-                  <strong>{formatoPesos(total)}</strong>
-                </div>
+                {!esAjuste && (
+                  <div className="total-remision">
+                    <span>Total</span>
+                    <strong>{formatoPesos(total)}</strong>
+                  </div>
+                )}
               </div>
 
               {error && <div className="alerta alerta-error">{error}</div>}

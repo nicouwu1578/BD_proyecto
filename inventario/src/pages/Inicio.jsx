@@ -142,7 +142,7 @@ export default function Inicio() {
                     <li key={m.nro_remision}>
                       <div>
                         <strong>
-                          {m.nro_remision} · {m.tercero?.nombre_tercero ?? 'Sin tercero'}
+                          {m.nro_remision} · {m.tercero?.nombre_tercero ?? 'Ajuste de stock'}
                         </strong>
                         <small>{formatoFecha(m.fecha)}</small>
                       </div>

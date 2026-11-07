@@ -1,4 +1,4 @@
-import { FiArrowDownCircle, FiArrowUpCircle, FiTruck, FiSliders } from 'react-icons/fi'
+import { FiArrowDownCircle, FiArrowUpCircle, FiSliders } from 'react-icons/fi'
 
 export const TIPOS = {
   Entrada: {
@@ -19,27 +19,18 @@ export const TIPOS = {
     nombreTercero: 'Cliente',
     restaStock: true,
   },
-  Traslado: {
-    titulo: 'Traslado',
-    subtitulo: 'Envío a la bodega de un cliente',
-    icono: FiTruck,
-    clase: 'tipo-traslado',
-    relaciones: ['Cliente', 'Ambos'],
-    nombreTercero: 'Cliente',
-    restaStock: true,
-  },
   Ajuste: {
     titulo: 'Ajuste',
-    subtitulo: 'Corrección de inventario (suma stock)',
+    subtitulo: 'Corrección de stock: sumar o restar',
     icono: FiSliders,
     clase: 'tipo-ajuste',
-    relaciones: ['Proveedor', 'Cliente', 'Ambos'],
-    nombreTercero: 'Tercero',
+    relaciones: [],
+    nombreTercero: null,
     restaStock: false,
   },
 }
 
-export const ORDEN_TIPOS = ['Entrada', 'Salida', 'Traslado', 'Ajuste']
+export const ORDEN_TIPOS = ['Entrada', 'Salida', 'Ajuste']
 
 export const BODEGA_PRINCIPAL = 6769
 

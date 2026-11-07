@@ -60,7 +60,6 @@ function hoyMenos(dias) {
 }
 
 export default function Auditoria() {
-  const [pestana, setPestana] = useState('auditoria')
   const { usuarios, nombreDe } = useUsuarios()
 
   return (
@@ -68,24 +67,11 @@ export default function Auditoria() {
       <div className="encabezado-pagina">
         <div>
           <h1>Auditoría</h1>
-          <p>Historial de cambios en la base de datos y errores registrados.</p>
+          <p>Historial de cambios en la base de datos.</p>
         </div>
       </div>
 
-      <div className="pestanas">
-        <button className={pestana === 'auditoria' ? 'activo' : ''} onClick={() => setPestana('auditoria')}>
-          Auditoría
-        </button>
-        <button className={pestana === 'errores' ? 'activo' : ''} onClick={() => setPestana('errores')}>
-          Errores
-        </button>
-      </div>
-
-      {pestana === 'auditoria' ? (
-        <Historial usuarios={usuarios} nombreDe={nombreDe} />
-      ) : (
-        <Errores nombreDe={nombreDe} />
-      )}
+      <Historial usuarios={usuarios} nombreDe={nombreDe} />
     </section>
   )
 }
@@ -326,121 +312,5 @@ function DetalleCambio({ cambio: a, nombreDe, onCerrar }) {
         </table>
       </div>
     </Modal>
-  )
-}
-
-function Errores({ nombreDe }) {
-  const [filas, setFilas] = useState([])
-  const [cargando, setCargando] = useState(true)
-  const [error, setError] = useState('')
-  const [abierto, setAbierto] = useState(null)
-
-  const cargar = useCallback(async () => {
-    setCargando(true)
-    setError('')
-    const { data, error: err } = await supabase
-      .from('log_errores')
-      .select('*')
-      .order('fecha', { ascending: false })
-      .limit(200)
-    if (err) setError(mensajeError(err))
-    setFilas(data ?? [])
-    setCargando(false)
-  }, [])
-
-  useEffect(() => {
-    cargar()
-  }, [cargar])
-
-  return (
-    <>
-      <div className="acciones-form espacio-abajo">
-        <button className="btn btn-secundario btn-chico" onClick={cargar} disabled={cargando}>
-          <FiRefreshCw /> Actualizar
-        </button>
-      </div>
-
-      {error && <div className="alerta alerta-error">{error}</div>}
-
-      {cargando ? (
-        <Cargando texto="Cargando errores..." />
-      ) : (
-        <div className="tarjeta sin-relleno">
-          <div className="tabla-scroll">
-            <table className="tabla tabla-clic">
-              <thead>
-                <tr>
-                  <th>Fecha y hora</th>
-                  <th>Usuario</th>
-                  <th>Origen</th>
-                  <th>Código</th>
-                  <th>Mensaje</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filas.map((e) => (
-                  <tr key={e.id_error} onClick={() => setAbierto(e)}>
-                    <td className="sin-salto">{fechaHora(e.fecha)}</td>
-                    <td>{nombreDe(e.usuario_app, e.email_app)}</td>
-                    <td className="mono">{e.origen}</td>
-                    <td className="mono">{e.codigo_error ?? '—'}</td>
-                    <td>{e.mensaje}</td>
-                  </tr>
-                ))}
-                {filas.length === 0 && (
-                  <tr>
-                    <td colSpan="5" className="vacio-tabla">
-                      No hay errores registrados.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {abierto && (
-        <Modal titulo="Detalle del error" onCerrar={() => setAbierto(null)} ancho={760}>
-          <dl className="datos">
-            <div>
-              <dt>Fecha y hora</dt>
-              <dd>{fechaHora(abierto.fecha)}</dd>
-            </div>
-            <div>
-              <dt>Usuario</dt>
-              <dd>{nombreDe(abierto.usuario_app, abierto.email_app)}</dd>
-            </div>
-            <div>
-              <dt>Origen</dt>
-              <dd className="mono">{abierto.origen}</dd>
-            </div>
-            <div>
-              <dt>Código</dt>
-              <dd className="mono">{abierto.codigo_error ?? '—'}</dd>
-            </div>
-          </dl>
-          <div className="alerta alerta-error">{abierto.mensaje}</div>
-          {abierto.detalle && (
-            <>
-              <h3 className="subtitulo-detalle">Detalle</h3>
-              <pre className="bloque-codigo">{abierto.detalle}</pre>
-            </>
-          )}
-          {abierto.parametros && (
-            <>
-              <h3 className="subtitulo-detalle">Datos enviados</h3>
-              <pre className="bloque-codigo">{JSON.stringify(abierto.parametros, null, 2)}</pre>
-            </>
-          )}
-          {abierto.contexto && (
-            <>
-              <h3 className="subtitulo-detalle">Contexto</h3>
-              <pre className="bloque-codigo">{abierto.contexto}</pre>
-            </>
-          )}
-        </Modal>
-      )}
-    </>
   )
 }
