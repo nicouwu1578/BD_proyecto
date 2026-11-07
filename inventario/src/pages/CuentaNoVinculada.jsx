@@ -1,5 +1,3 @@
-// Se muestra cuando alguien inició sesión en Supabase Auth, pero su cuenta
-// no aparece en la tabla "usuario" (usuario.auth_id vacío o distinto).
 import { useAuth } from '../context/AuthContext'
 import logo from '../assets/logo.png'
 

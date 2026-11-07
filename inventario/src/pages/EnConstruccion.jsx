@@ -1,4 +1,3 @@
-// Página temporal para las secciones que todavía no se han construido
 import { FiTool } from 'react-icons/fi'
 
 export default function EnConstruccion({ titulo }) {

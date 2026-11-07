@@ -1,5 +1,3 @@
-// Número de remisión: tu base no lo genera sola, así que la app calcula el
-// siguiente a partir del último que empieza con "R" (R0000001, R0000002, ...).
 import { supabase } from './supabase'
 
 export async function siguienteNroRemision() {

@@ -1,4 +1,3 @@
-// Página de inicio de sesión (correo y contraseña con Supabase Auth)
 import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi'
@@ -17,11 +16,10 @@ export default function Login() {
   const [error, setError] = useState('')
   const [enviando, setEnviando] = useState(false)
 
-  // Si ya hay sesión, no tiene sentido ver el login
   if (session) return <Navigate to="/" replace />
 
   async function manejarEnvio(e) {
-    e.preventDefault() // evita que el formulario recargue la página
+    e.preventDefault()
     setError('')
     setEnviando(true)
     const err = await iniciarSesion(correo, contrasena)
@@ -30,7 +28,6 @@ export default function Login() {
       setError(mensajeError(err))
       return
     }
-    // vuelve a la página que intentaba abrir, o al Inicio
     navigate(location.state?.desde || '/', { replace: true })
   }
 

@@ -1,6 +1,3 @@
-// Registrar una remisión: Entrada (compra), Salida (venta), Traslado o Ajuste.
-// Al guardar se llama a TU función registrar_movimiento de Supabase, que
-// guarda todo junto y actualiza el stock (si algo falla, no se guarda nada).
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -22,14 +19,14 @@ import Buscador from '../components/Buscador'
 import NuevoTercero from '../components/NuevoTercero'
 import Cargando from '../components/Cargando'
 
-const hoy = () => new Date().toLocaleDateString('en-CA') // AAAA-MM-DD en hora local
+const hoy = () => new Date().toLocaleDateString('en-CA')
 
 export default function NuevaTransaccion() {
   const { rol } = useAuth()
   const navigate = useNavigate()
   const { productos, cargando: cargandoProductos } = useProductos()
 
-  const [permitidos, setPermitidos] = useState(null) // tipos que el rol puede registrar
+  const [permitidos, setPermitidos] = useState(null)
   const [terceros, setTerceros] = useState([])
   const [bodegas, setBodegas] = useState([])
 
@@ -37,14 +34,13 @@ export default function NuevaTransaccion() {
   const [fecha, setFecha] = useState(hoy)
   const [tercero, setTercero] = useState(null)
   const [destino, setDestino] = useState('')
-  const [lineas, setLineas] = useState([]) // { producto, cantidad, precio }
+  const [lineas, setLineas] = useState([])
   const [mostrarNuevoTercero, setMostrarNuevoTercero] = useState(false)
 
   const [error, setError] = useState('')
   const [guardando, setGuardando] = useState(false)
-  const [resultado, setResultado] = useState(null) // { nro_remision, mensaje }
+  const [resultado, setResultado] = useState(null)
 
-  // Cargar permisos del rol, terceros y bodegas
   useEffect(() => {
     if (rol === 'Admin') {
       setPermitidos(ORDEN_TIPOS)
@@ -69,19 +65,16 @@ export default function NuevaTransaccion() {
 
   const config = tipo ? TIPOS[tipo] : null
 
-  // Solo los terceros que sirven para el tipo elegido
   const tercerosValidos = useMemo(
     () => (config ? terceros.filter((t) => config.relaciones.includes(t.relacion)) : []),
     [terceros, config],
   )
 
-  // Productos que todavía no están en la remisión
   const productosDisponibles = useMemo(() => {
     const usados = new Set(lineas.map((l) => l.producto.codigo))
     return productos.filter((p) => !usados.has(p.codigo))
   }, [productos, lineas])
 
-  // El cliente mostrador (si ya está creado en la base)
   const clienteMostrador = terceros.find((t) => Number(t.cedula_tercero) === CLIENTE_MOSTRADOR)
 
   const total = lineas.reduce((s, l) => s + (Number(l.cantidad) || 0) * (Number(l.precio) || 0), 0)
@@ -90,7 +83,6 @@ export default function NuevaTransaccion() {
   function elegirTipo(t) {
     setTipo(t)
     setError('')
-    // si el tercero elegido no sirve para el nuevo tipo, se quita
     if (tercero && !TIPOS[t].relaciones.includes(tercero.relacion)) setTercero(null)
     if (t !== 'Traslado') setDestino('')
   }
@@ -135,7 +127,6 @@ export default function NuevaTransaccion() {
     }))
 
     try {
-      // Se intenta hasta 3 veces por si otra persona usó el mismo número al tiempo
       for (let intento = 0; intento < 3; intento++) {
         const nro = await siguienteNroRemision()
         const { data, error: err } = await supabase.rpc('registrar_movimiento', {
@@ -152,7 +143,6 @@ export default function NuevaTransaccion() {
           setResultado(data)
           return
         }
-        // número repetido -> se reintenta con el siguiente
         if (data?.codigo_error === '23505' && /movimiento_pkey/.test(data?.mensaje ?? '')) continue
         setError(data?.mensaje ?? 'No se pudo registrar la remisión.')
         return
@@ -176,7 +166,6 @@ export default function NuevaTransaccion() {
 
   if (permitidos === null || cargandoProductos) return <Cargando texto="Preparando el formulario..." />
 
-  // Pantalla de éxito
   if (resultado) {
     return (
       <section>
@@ -214,7 +203,6 @@ export default function NuevaTransaccion() {
         <div className="alerta alerta-error">Tu rol ({rol}) no tiene permiso para registrar movimientos.</div>
       ) : (
         <>
-          {/* 1. Tipo de movimiento */}
           <h2 className="paso">1. ¿Qué vas a registrar?</h2>
           <div className="selector-tipo">
             {ORDEN_TIPOS.filter((t) => permitidos.includes(t)).map((t) => {
@@ -236,7 +224,6 @@ export default function NuevaTransaccion() {
 
           {tipo && (
             <>
-              {/* 2. Datos generales */}
               <h2 className="paso">2. Datos de la remisión</h2>
               <div className="tarjeta form-grid">
                 <div className="campo campo-ancho">
@@ -323,7 +310,6 @@ export default function NuevaTransaccion() {
                 )}
               </div>
 
-              {/* 3. Productos */}
               <h2 className="paso">3. Productos</h2>
               <div className="tarjeta">
                 <Buscador

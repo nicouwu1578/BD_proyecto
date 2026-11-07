@@ -1,4 +1,3 @@
-// Página principal: resumen rápido del inventario y accesos directos
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
@@ -21,7 +20,6 @@ export default function Inicio() {
   const { productos, cargando, error } = useProductos()
   const [stockMinimo] = useState(leerStockMinimo)
 
-  // Últimas 5 transacciones (remisiones) con el nombre del tercero
   const [ultimas, setUltimas] = useState([])
   const [errorMov, setErrorMov] = useState('')
   useEffect(() => {
@@ -37,7 +35,6 @@ export default function Inicio() {
       })
   }, [])
 
-  // Cálculos del resumen (se recalculan solo cuando cambian los productos)
   const resumen = useMemo(() => {
     const unidades = productos.reduce((s, p) => s + (p.cantidad || 0), 0)
     const valor = productos.reduce((s, p) => s + (p.cantidad || 0) * Number(p.precio_venta), 0)

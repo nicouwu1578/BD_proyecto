@@ -1,5 +1,3 @@
-// Estructura de todas las páginas internas: barra lateral + contenido.
-// En pantallas pequeñas la barra lateral se esconde y se abre con el botón ☰.
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { FiLogOut, FiMenu, FiX } from 'react-icons/fi'
@@ -11,12 +9,10 @@ export default function Layout() {
   const { usuario, rol, correo, cerrarSesion } = useAuth()
   const [menuAbierto, setMenuAbierto] = useState(false)
 
-  // Solo se muestran las secciones que el rol puede ver
   const secciones = SECCIONES.filter((s) => s.roles.includes(rol))
 
   return (
     <div className="layout">
-      {/* Barra superior: solo se ve en celular/tablet */}
       <header className="topbar">
         <button className="btn-icono" onClick={() => setMenuAbierto(true)} aria-label="Abrir menú">
           <FiMenu />
@@ -25,7 +21,6 @@ export default function Layout() {
         <span className="topbar-titulo">Multitornillos</span>
       </header>
 
-      {/* Fondo oscuro detrás del menú abierto en celular */}
       {menuAbierto && <div className="sidebar-fondo" onClick={() => setMenuAbierto(false)} />}
 
       <aside className={`sidebar ${menuAbierto ? 'abierta' : ''}`}>
@@ -73,7 +68,6 @@ export default function Layout() {
       </aside>
 
       <main className="contenido">
-        {/* Aquí React Router dibuja la página de la ruta actual */}
         <Outlet />
       </main>
     </div>

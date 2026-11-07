@@ -1,4 +1,3 @@
-// Pantalla simple de "cargando" con un círculo que gira
 export default function Cargando({ texto = 'Cargando...' }) {
   return (
     <div className="cargando">

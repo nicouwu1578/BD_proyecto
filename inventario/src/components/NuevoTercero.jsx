@@ -1,6 +1,3 @@
-// Formulario rápido para crear un cliente o proveedor sin salir de la venta.
-// Tu base decide quién puede: Ventas crea clientes, Compras crea proveedores,
-// Admin crea cualquiera (políticas RLS de la tabla tercero).
 import { useEffect, useState } from 'react'
 import Modal from './Modal'
 import { supabase, mensajeError } from '../lib/supabase'
@@ -32,7 +29,6 @@ export default function NuevoTercero({ relacionSugerida = 'Cliente', onCreado, o
     e.preventDefault()
     setError('')
 
-    // Validaciones antes de ir a la base (la base vuelve a validar todo)
     const documento = form.cedula_tercero.replace(/\D/g, '')
     if (!documento || Number(documento) <= 0) return setError('Escribe un documento válido (solo números).')
     if (!form.nombre_tercero.trim()) return setError('Escribe el nombre.')

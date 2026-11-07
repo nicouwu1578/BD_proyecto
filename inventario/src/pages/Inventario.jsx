@@ -1,5 +1,3 @@
-// Página de Inventario: tabla de productos con búsqueda, filtros, orden,
-// paginación y alerta de stock bajo.
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
@@ -18,7 +16,6 @@ import Cargando from '../components/Cargando'
 const POR_PAGINA = 25
 const SIN_GRADO = '__sin_grado__'
 
-// Columnas por las que se puede ordenar (clic en el encabezado)
 const ORDENABLES = {
   codigo: (p) => p.codigo,
   producto: (p) => p.producto,
@@ -28,7 +25,6 @@ const ORDENABLES = {
   valor: (p) => (p.cantidad ?? 0) * Number(p.precio_venta),
 }
 
-// Encabezado de tabla que ordena al hacer clic (muestra una flecha si está activo)
 function Encabezado({ columna, orden, onOrdenar, derecha, children }) {
   const activo = orden.columna === columna
   return (
@@ -43,7 +39,6 @@ export default function Inventario() {
   const { productos, cargando, error, recargar } = useProductos()
   const [params] = useSearchParams()
 
-  // Estado de los filtros
   const [texto, setTexto] = useState('')
   const [categoria, setCategoria] = useState('')
   const [linea, setLinea] = useState('')
@@ -54,7 +49,6 @@ export default function Inventario() {
   const [orden, setOrden] = useState({ columna: 'producto', asc: true })
   const [pagina, setPagina] = useState(1)
 
-  // Opciones de los selectores, sacadas de los mismos productos
   const opciones = useMemo(() => {
     const unicos = (fn) => [...new Set(productos.map(fn).filter(Boolean))].sort()
     return {
@@ -65,7 +59,6 @@ export default function Inventario() {
     }
   }, [productos])
 
-  // Productos después de filtrar y ordenar
   const filtrados = useMemo(() => {
     const busqueda = texto.trim().toLowerCase()
     const lista = productos.filter((p) => {
@@ -87,7 +80,6 @@ export default function Inventario() {
     })
   }, [productos, texto, categoria, linea, material, grado, soloBajo, stockMinimo, orden])
 
-  // Totales de lo que se está viendo
   const totales = useMemo(
     () => ({
       unidades: filtrados.reduce((s, p) => s + (p.cantidad ?? 0), 0),
@@ -103,7 +95,6 @@ export default function Inventario() {
 
   const hayFiltros = texto || categoria || linea || material || grado || soloBajo
 
-  // Cualquier cambio de filtro vuelve a la página 1
   function cambiar(setter) {
     return (e) => {
       setter(e.target.type === 'checkbox' ? e.target.checked : e.target.value)

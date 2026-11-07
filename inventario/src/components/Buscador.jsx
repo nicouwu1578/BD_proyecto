@@ -1,14 +1,12 @@
-// Campo de búsqueda con lista desplegable de resultados.
-// Se usa para elegir el tercero y para agregar productos a la remisión.
 import { useMemo, useState } from 'react'
 import { FiSearch } from 'react-icons/fi'
 
 export default function Buscador({
-  opciones, // lista de objetos
-  textoDe, // (opcion) => texto en el que se busca
-  render, // (opcion) => cómo se dibuja cada resultado
-  claveDe, // (opcion) => clave única
-  onElegir, // (opcion) => void
+  opciones,
+  textoDe,
+  render,
+  claveDe,
+  onElegir,
   placeholder,
   maximo = 8,
   vacio = 'Sin resultados',
@@ -40,7 +38,6 @@ export default function Buscador({
             setAbierto(true)
           }}
           onFocus={() => setAbierto(true)}
-          // pequeño retraso para que alcance a registrar el clic en un resultado
           onBlur={() => setTimeout(() => setAbierto(false), 150)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {

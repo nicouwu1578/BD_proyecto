@@ -1,18 +1,15 @@
-
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-
   const [session, setSession] = useState(null)
- 
+
   const [usuario, setUsuario] = useState(null)
   const [cargandoSesion, setCargandoSesion] = useState(true)
   const [cargandoUsuario, setCargandoUsuario] = useState(false)
 
-  
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)
@@ -23,12 +20,9 @@ export function AuthProvider({ children }) {
       setSession(nuevaSesion)
     })
 
- 
     return () => data.subscription.unsubscribe()
   }, [])
 
-  // 2) Cada vez que cambia la sesión, se busca la fila en tu tabla "usuario"
-  //    cuyo auth_id es el id de la cuenta que inició sesión.
   useEffect(() => {
     if (!session) {
       setUsuario(null)
@@ -57,7 +51,7 @@ export function AuthProvider({ children }) {
       email: correo.trim(),
       password: contrasena,
     })
-    return error // null si todo salió bien
+    return error
   }
 
   async function cerrarSesion() {
@@ -66,7 +60,7 @@ export function AuthProvider({ children }) {
 
   const valor = {
     session,
-    usuario, // { id_usuario, usuario, rol } o null si la cuenta no está vinculada
+    usuario,
     rol: usuario?.rol ?? null,
     correo: session?.user?.email ?? '',
     cargando: cargandoSesion || cargandoUsuario,

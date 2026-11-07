@@ -1,17 +1,13 @@
-/* =====================================================================
-   Estilos generales de la app — paleta tomada del logo de Multitornillos
-   Para cambiar un color en TODA la app, cámbialo solo aquí en :root
-   ===================================================================== */
 :root {
-  --rojo: #d7141a;          /* color principal: botones, acentos */
-  --rojo-oscuro: #a80f14;   /* rojo al pasar el mouse */
-  --rojo-suave: #fde8e9;    /* fondos de alertas rojas */
-  --metal: #8c8f94;         /* gris metálico: bordes, textos secundarios */
-  --plata: #c9cccf;         /* gris plateado: líneas, bordes suaves */
-  --fondo: #f4f5f7;         /* fondo general */
+  --rojo: #d7141a;
+  --rojo-oscuro: #a80f14;
+  --rojo-suave: #fde8e9;
+  --metal: #8c8f94;
+  --plata: #c9cccf;
+  --fondo: #f4f5f7;
   --blanco: #ffffff;
-  --texto: #2b2d31;         /* texto principal (casi negro) */
-  --sidebar: #2b2d31;       /* barra lateral oscura con acentos rojos */
+  --texto: #2b2d31;
+  --sidebar: #2b2d31;
   --verde: #1f8f4e;
   --verde-suave: #e3f4ea;
   --amarillo: #b7791f;
@@ -31,7 +27,6 @@ body { margin: 0; min-height: 100vh; background: var(--fondo); }
 h1, h2, h3 { margin: 0 0 0.25rem; }
 code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.85em; }
 
-/* ---------- Botones ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
   padding: 0.65rem 1.1rem; border-radius: 8px; border: 1px solid transparent;
@@ -51,7 +46,6 @@ code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-si
 }
 .btn-icono:hover { background: rgba(127, 127, 127, 0.15); }
 
-/* ---------- Formularios ---------- */
 .campo { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; text-align: left; }
 .campo > span { font-size: 0.85rem; font-weight: 600; color: #4a4d52; }
 .input-con-icono {
@@ -64,12 +58,10 @@ code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-si
   background: transparent; color: var(--texto); min-width: 0;
 }
 
-/* ---------- Alertas ---------- */
 .alerta { padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.9rem; margin-bottom: 1rem; text-align: left; }
 .alerta-error { background: var(--rojo-suave); color: var(--rojo-oscuro); border: 1px solid #f5c2c4; }
 .alerta-ok { background: var(--verde-suave); color: var(--verde); border: 1px solid #b9e2c9; }
 
-/* ---------- Login ---------- */
 .login-pagina {
   min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem;
   background:
@@ -85,7 +77,6 @@ code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-si
 .login-ayuda { color: var(--metal); font-size: 0.85rem; margin: 1rem 0 0; }
 .codigo-copiable { display: block; margin: 0.5rem 0 1.25rem; padding: 0.6rem; word-break: break-all; user-select: all; }
 
-/* ---------- Layout con barra lateral ---------- */
 .layout { display: flex; min-height: 100vh; }
 .sidebar {
   width: var(--ancho-sidebar); flex-shrink: 0; background: var(--sidebar); color: #e6e7e9;
@@ -129,7 +120,6 @@ code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-si
 .topbar { display: none; }
 .sidebar-fondo { display: none; }
 
-/* ---------- Contenido de páginas ---------- */
 .encabezado-pagina { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
 .encabezado-pagina p { margin: 0; color: var(--metal); }
 .tarjeta { background: var(--blanco); border-radius: var(--radio); box-shadow: var(--sombra); padding: 1.25rem; }
@@ -147,7 +137,6 @@ code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-si
 .acceso-rojo { background: var(--rojo); color: var(--blanco); }
 .acceso-rojo svg { color: var(--blanco); }
 
-/* ---------- Resumen (Inicio) ---------- */
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
 .kpi {
   display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.25rem; background: var(--blanco);
@@ -173,7 +162,6 @@ code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-si
 .lista-simple strong { font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lista-simple small { color: var(--metal); font-size: 0.78rem; }
 
-/* Etiquetas de stock, línea y tipo de movimiento */
 .stock { display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 6px; white-space: nowrap; }
 .stock-ok { color: var(--texto); }
 .stock-bajo { background: var(--amarillo-suave); color: var(--amarillo); }
@@ -187,7 +175,6 @@ code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-si
 .tipo-traslado { background: #e6effa; color: #1f5fa8; }
 .tipo-ajuste { background: var(--amarillo-suave); color: var(--amarillo); }
 
-/* ---------- Inventario ---------- */
 .aviso-stock {
   width: 100%; display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; padding: 0.75rem 1rem;
   background: var(--amarillo-suave); color: var(--amarillo); border: 1px solid #f1d9a8; border-radius: var(--radio);
@@ -228,7 +215,6 @@ code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-si
 .paginacion > div { display: flex; align-items: center; gap: 0.5rem; }
 .pagina-num { min-width: 60px; text-align: center; }
 
-/* ---------- Formularios generales ---------- */
 .input {
   width: 100%; padding: 0.65rem 0.75rem; border: 1px solid var(--plata); border-radius: 8px;
   background: var(--blanco); font-size: 0.95rem; color: var(--texto); font-family: inherit;
@@ -247,7 +233,6 @@ code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-si
 .btn-icono.peligro:hover { color: var(--rojo); background: var(--rojo-suave); }
 .paso { font-size: 1rem; margin: 1.5rem 0 0.75rem; color: #4a4d52; }
 
-/* ---------- Ventana emergente ---------- */
 .modal-fondo {
   position: fixed; inset: 0; z-index: 100; background: rgba(20, 20, 24, 0.5);
   display: flex; align-items: flex-start; justify-content: center; padding: 5vh 1rem; overflow-y: auto;
@@ -257,7 +242,6 @@ code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-si
 .modal-cabecera h2 { font-size: 1.15rem; margin: 0; }
 .modal-cuerpo { padding: 1.25rem; }
 
-/* ---------- Transacciones ---------- */
 .selector-tipo { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.75rem; }
 .opcion-tipo {
   display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem; padding: 1.1rem; text-align: left;
@@ -315,12 +299,59 @@ code { background: #ececef; padding: 0.1rem 0.35rem; border-radius: 4px; font-si
 .tipo-traslado.opcion-tipo { background: #e6effa; }
 .tipo-ajuste.opcion-tipo { background: var(--amarillo-suave); }
 
-/* ---------- Cargando ---------- */
+.segmentado { display: inline-flex; border: 1px solid var(--plata); border-radius: 8px; overflow: hidden; background: var(--blanco); }
+.segmentado button {
+  border: none; background: transparent; padding: 0.5rem 0.8rem; font-size: 0.86rem; font-family: inherit;
+  color: #4a4d52; cursor: pointer; border-right: 1px solid var(--plata);
+}
+.segmentado button:last-child { border-right: none; }
+.segmentado button:hover { background: #f4f5f7; }
+.segmentado button.activo { background: var(--texto); color: var(--blanco); font-weight: 600; }
+.segmentado-chico button { padding: 0.35rem 0.6rem; font-size: 0.8rem; }
+.pestanas { display: flex; gap: 0.25rem; border-bottom: 2px solid var(--plata); margin-bottom: 1rem; }
+.pestanas button {
+  border: none; background: none; padding: 0.7rem 1.1rem; font-size: 0.95rem; font-weight: 600; font-family: inherit;
+  color: var(--metal); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px;
+}
+.pestanas button.activo { color: var(--rojo); border-bottom-color: var(--rojo); }
+.reporte { margin-bottom: 1rem; }
+.reporte .tarjeta-titulo { align-items: flex-start; gap: 0.75rem; flex-wrap: wrap; }
+.acciones-reporte { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.kpi-ventas { border-left-color: #d7141a; }
+.kpi-ventas > svg { color: #d7141a; }
+.kpi-compras { border-left-color: #2f6fbf; }
+.kpi-compras > svg { color: #2f6fbf; }
+.negativo { color: var(--rojo-oscuro); }
+.vacio-grafica { padding: 2rem 0; text-align: center; }
+.tooltip-grafica {
+  background: var(--blanco); border: 1px solid var(--plata); border-radius: 8px; padding: 0.55rem 0.7rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); font-size: 0.82rem; min-width: 170px;
+}
+.tooltip-grafica strong { display: block; margin-bottom: 0.3rem; color: var(--texto); }
+.tooltip-fila { display: flex; align-items: center; gap: 0.45rem; color: #4a4d52; }
+.tooltip-fila b { margin-left: auto; color: var(--texto); }
+.tooltip-marca { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.sin-salto { white-space: nowrap; }
+.leyenda { display: flex; justify-content: center; gap: 1.25rem; font-size: 0.85rem; color: #4a4d52; padding-top: 0.25rem; }
+.leyenda > span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.reporte .tabla td:first-child { white-space: nowrap; }
+.filtro-registro { width: 220px; padding: 0.6rem 0.7rem; }
+.espacio-abajo { margin-bottom: 0.75rem; display: inline-flex; }
+.tabla-cambios td { vertical-align: top; word-break: break-word; }
+.campo-cambiado { background: var(--amarillo-suave); }
+.campo-cambiado .mono { font-weight: 700; color: var(--texto); }
+.campo-cambiado .valor-antes { color: var(--rojo-oscuro); text-decoration: line-through; }
+.campo-cambiado .valor-despues { color: var(--verde); font-weight: 600; }
+.subtitulo-detalle { font-size: 0.85rem; color: var(--metal); margin: 1rem 0 0.35rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.bloque-codigo {
+  margin: 0; padding: 0.75rem; background: #f4f5f7; border: 1px solid #e3e4e7; border-radius: 8px;
+  font-size: 0.8rem; white-space: pre-wrap; word-break: break-word; max-height: 260px; overflow: auto;
+}
+
 .cargando { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; color: var(--metal); }
 .spinner { width: 38px; height: 38px; border: 4px solid var(--plata); border-top-color: var(--rojo); border-radius: 50%; animation: girar 0.8s linear infinite; }
 @keyframes girar { to { transform: rotate(360deg); } }
 
-/* ---------- Celular y tablet ---------- */
 @media (max-width: 900px) {
   .layout { flex-direction: column; }
   .topbar {

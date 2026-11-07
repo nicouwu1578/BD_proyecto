@@ -1,4 +1,3 @@
-
 import { FiArrowDownCircle, FiArrowUpCircle, FiTruck, FiSliders } from 'react-icons/fi'
 
 export const TIPOS = {
@@ -44,11 +43,9 @@ export const ORDEN_TIPOS = ['Entrada', 'Salida', 'Traslado', 'Ajuste']
 
 export const BODEGA_PRINCIPAL = 6769
 
-
 export const CLIENTE_MOSTRADOR = 222222222222
-
 
 export const TIPOS_TERCERO = ['Taller', 'Distribuidor', 'Persona', 'Otros']
 
-
+// Apagado hasta confirmar que trg_movimiento_anulacion solo revierte el stock al ANULAR
 export const PERMITIR_MARCAR_REALIZADA = false

@@ -1,4 +1,3 @@
-// Listado de remisiones con filtros, detalle, "marcar realizada" y anular.
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FiPlus, FiSearch, FiRefreshCw, FiX } from 'react-icons/fi'
@@ -9,8 +8,6 @@ import { ORDEN_TIPOS, PERMITIR_MARCAR_REALIZADA } from '../config/movimientos'
 import Cargando from '../components/Cargando'
 import Modal from '../components/Modal'
 
-// Hay dos llaves foráneas hacia bodega (origen y destino), por eso se nombra
-// cada relación con el nombre de su llave foránea.
 const COLUMNAS = `
   nro_remision, fecha, estado, tipo_movimiento, id_usuario, id_tercero,
   tercero ( nombre_tercero, relacion ),
@@ -187,14 +184,12 @@ export default function Transacciones() {
   )
 }
 
-// Ventana con el detalle de una remisión y sus acciones
 function DetalleRemision({ remision: m, rol, idUsuario, onCerrar, onCambio }) {
   const [confirmarAnular, setConfirmarAnular] = useState(false)
   const [trabajando, setTrabajando] = useState(false)
   const [error, setError] = useState('')
 
   const esAdmin = rol === 'Admin'
-  // Tus reglas: solo Admin anula; los demás pueden pasar SU remisión de Activa a Realizado
   const puedeAnular = esAdmin && m.estado !== 'Anulada'
   const puedeRealizar =
     PERMITIR_MARCAR_REALIZADA && m.estado === 'Activa' && (esAdmin || m.id_usuario === idUsuario)

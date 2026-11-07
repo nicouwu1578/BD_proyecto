@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, mensajeError } from '../lib/supabase'
 
-
 const COLUMNAS = `
   codigo, producto, diametro_mm, paso_mm, longitud_mm, grado,
   precio_venta, cantidad,

@@ -1,4 +1,3 @@
-// Ventana emergente reutilizable (se cierra con la X, con Escape o clic afuera)
 import { useEffect } from 'react'
 import { FiX } from 'react-icons/fi'
 
