@@ -269,13 +269,15 @@ export default function NuevaTransaccion() {
                           <FiShoppingBag /> Cliente mostrador
                         </button>
                       )}
-                      <button
-                        type="button"
-                        className="btn btn-secundario"
-                        onClick={() => setMostrarNuevoTercero(true)}
-                      >
-                        <FiUserPlus /> Nuevo {config.nombreTercero.toLowerCase()}
-                      </button>
+                      {tipo !== 'Ajuste' && (
+                        <button
+                          type="button"
+                          className="btn btn-secundario"
+                          onClick={() => setMostrarNuevoTercero(true)}
+                        >
+                          <FiUserPlus /> Nuevo {config.nombreTercero.toLowerCase()}
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
