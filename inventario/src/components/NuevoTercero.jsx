@@ -3,7 +3,12 @@ import Modal from './Modal'
 import { supabase, mensajeError } from '../lib/supabase'
 import { TIPOS_TERCERO } from '../config/movimientos'
 
-export default function NuevoTercero({ relacionSugerida = 'Cliente', onCreado, onCerrar }) {
+export default function NuevoTercero({
+  relacionSugerida = 'Cliente',
+  relaciones = ['Cliente', 'Proveedor', 'Ambos'],
+  onCreado,
+  onCerrar,
+}) {
   const [ciudades, setCiudades] = useState([])
   const [form, setForm] = useState({
     cedula_tercero: '',
@@ -63,7 +68,7 @@ export default function NuevoTercero({ relacionSugerida = 'Cliente', onCreado, o
   }
 
   return (
-    <Modal titulo="Nuevo cliente / proveedor" onCerrar={onCerrar}>
+    <Modal titulo={`Nuevo ${relacionSugerida.toLowerCase()}`} onCerrar={onCerrar}>
       <form onSubmit={guardar} className="form-grid">
         <label className="campo">
           <span>Documento (NIT o cédula)</span>
@@ -78,9 +83,9 @@ export default function NuevoTercero({ relacionSugerida = 'Cliente', onCreado, o
         <label className="campo">
           <span>Relación</span>
           <select className="input" value={form.relacion} onChange={cambiar('relacion')}>
-            <option>Cliente</option>
-            <option>Proveedor</option>
-            <option>Ambos</option>
+            {relaciones.map((r) => (
+              <option key={r}>{r}</option>
+            ))}
           </select>
         </label>
         <label className="campo">

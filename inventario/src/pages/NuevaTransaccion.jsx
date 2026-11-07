@@ -407,6 +407,7 @@ export default function NuevaTransaccion() {
       {mostrarNuevoTercero && (
         <NuevoTercero
           relacionSugerida={config?.nombreTercero === 'Proveedor' ? 'Proveedor' : 'Cliente'}
+          relaciones={config?.relaciones}
           onCerrar={() => setMostrarNuevoTercero(false)}
           onCreado={(t) => {
             setTerceros((lista) => [...lista, t])
