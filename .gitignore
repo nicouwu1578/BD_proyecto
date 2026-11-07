@@ -1,15 +1,12 @@
-# ---------------------------------------------------------------
-# Archivos que NUNCA se suben a GitHub
-# ---------------------------------------------------------------
 
-# Scripts SQL (tienen datos reales de la empresa: precios, existencias)
+
+
 sql/
 
-# Claves de Supabase (en cualquier carpeta)
+
 .env
 .env.*
 !.env.example
 
-# Dependencias y compilados (se regeneran con npm install / npm run build)
 node_modules/
 dist/
